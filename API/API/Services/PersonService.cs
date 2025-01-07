@@ -178,9 +178,14 @@ namespace API.Services
                 return new BadRequestObjectResult("Invalid data");
             }
 
-            try { 
-            
-            var foundPerson = await _personRepository.GetByIdAsync(Id);
+            try {
+
+                Person? foundPerson = (await _personRepository.GetFilteredAsync(new FilterParameter<Person>
+                {
+                    Filter = a => a.Id == Id && a.Address != null,
+                    Include = query => query.Include(a => a.Address)
+                })).FirstOrDefault();
+
                 if (foundPerson == null) {
                     return new NotFoundObjectResult($"The person has not be found {Id}");
                 }
