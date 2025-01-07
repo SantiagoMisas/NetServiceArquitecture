@@ -2,7 +2,7 @@
 
 namespace API.Models
 {
-    public class Address: GenericEntity
+    public class Address: GenericEntity<string>
     {
 
         public double? latitude { get; set; }

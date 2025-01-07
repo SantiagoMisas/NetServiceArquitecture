@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using API.DTOS;
 using API.Models;
 using API.Interfaces;
+using API.Utilities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,10 +17,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(
     builder.Configuration.GetConnectionString("DefaultConnection")
 ));
 
-builder.Services.AddScoped<IGenericRepository<Person, string>, RepositoryImpl<Person, string>>();
-builder.Services.AddScoped<IEdit<PersonDto>, PersonService>();
-builder.Services.AddScoped<IRead<PersonDto>, PersonService>();
-builder.Services.AddControllers();
+IoCConfiguration.Configure(builder.Services);
 
 var app = builder.Build();
 

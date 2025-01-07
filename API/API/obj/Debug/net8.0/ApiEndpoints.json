@@ -1,0 +1,71 @@
+[
+  {
+    "ContainingType": "API.Controllers.PersonController",
+    "Method": "createPerson",
+    "RelativePath": "api/Person/createPerson",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "personDto",
+        "Type": "API.DTOS.PersonDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.PersonController",
+    "Method": "createPerson",
+    "RelativePath": "api/Person/deletePerson/{Id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.PersonController",
+    "Method": "getPerson",
+    "RelativePath": "api/Person/getPerson/{Id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.PersonController",
+    "Method": "upatePerson",
+    "RelativePath": "api/Person/updatePerson/{Id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "Id",
+        "Type": "System.String",
+        "IsRequired": true
+      },
+      {
+        "Name": "personDto",
+        "Type": "API.DTOS.PersonDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]

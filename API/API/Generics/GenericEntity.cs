@@ -1,7 +1,7 @@
 ﻿namespace API.Generics
 {
-    public class GenericEntity
+    public class GenericEntity<TKey>
     {
-        public string? Id { get; set; }
+        public TKey? Id { get; set; }
     }
 }

@@ -48,5 +48,55 @@ namespace API.Repositories
         {
             await _context.SaveChangesAsync();
         }
+
+        public async Task<IEnumerable<T>> GetFilteredAsync(FilterParameter<T> parameters)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (parameters.Filter != null)
+            {
+                query = query.Where(parameters.Filter);
+            }
+
+            if (parameters.Include != null)
+            {
+                query = parameters.Include(query);
+            }
+
+            if (parameters.OrderBy != null)
+            {
+                query = parameters.OrderBy(query);
+            }
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<T>> GetQueryResultAsync(QueryParameter<T> parameters)
+        {
+            IQueryable<T> query = _dbSet;
+
+            if (parameters.Where != null)
+            {
+                query = query.Where(parameters.Where);
+            }
+
+            if (parameters.Include != null)
+            {
+                query = parameters.Include(query);
+            }
+
+            if (parameters.OrderBy != null)
+            {
+                query = parameters.IsAscending
+                            ? query.AsEnumerable().OrderBy(parameters.OrderBy).AsQueryable()
+                            : query.AsEnumerable().OrderByDescending(parameters.OrderBy).AsQueryable();
+            }
+
+            return await query.ToListAsync();
+        }
+
+
+
+
     }
 }
