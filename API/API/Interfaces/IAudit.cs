@@ -1,6 +1,6 @@
 ﻿namespace API.Interfaces
 {
-    public interface IAuditM<TKey>
+    public interface IAudit<TKey>
     {
         public DateTime? CreatedAt { get; set; }
 

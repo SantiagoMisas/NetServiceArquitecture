@@ -2,7 +2,7 @@
 
 namespace API.Models
 {
-    public class Person: GenericEntity<string>
+    public class Person: GenericEntity
     {
         public string? Name { get; set; }
 
