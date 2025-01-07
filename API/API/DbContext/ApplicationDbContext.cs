@@ -15,12 +15,13 @@ namespace API.ApplicationDb
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Person>()
-                .HasKey(e => e.Id);
+                .HasKey(p => p.Id);
 
             modelBuilder.Entity<Address>()
-                .HasOne(e => e.Person)
-                .WithOne(e=>e.Address)
-                .HasForeignKey<Person>(e => e.AddressId);
+               .HasOne(a => a.Person)  
+               .WithOne(p => p.Address)  
+               .HasForeignKey<Person>(p => p.AddressId);
+
         }
     }
 }

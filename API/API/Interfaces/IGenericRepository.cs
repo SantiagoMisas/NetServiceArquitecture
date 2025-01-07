@@ -1,5 +1,6 @@
 ﻿using API.Generics;
 using API.Repositories;
+using System.Linq.Expressions;
 
 namespace API.Interfaces
 {
@@ -11,6 +12,7 @@ namespace API.Interfaces
         Task UpdateAsync(T entity);
         Task DeleteAsync(TKey id);
         Task SaveChangesAsync();
+        IQueryable<T> Include(params Expression<Func<T, object>>[] includes);
         Task<IEnumerable<T>> GetFilteredAsync(FilterParameter<T> parameters);
         Task<IEnumerable<T>> GetQueryResultAsync(QueryParameter<T> parameters);
     }

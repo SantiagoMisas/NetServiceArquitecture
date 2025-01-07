@@ -3,6 +3,7 @@ using System;
 using API.ApplicationDb;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbModelSnapshot : ModelSnapshot
+    [Migration("20250107221220_updateModels3")]
+    partial class updateModels3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +47,10 @@ namespace API.Migrations
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("AddressId")
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("Age")
+                        .HasColumnType("int");
 
                     b.Property<string>("Email")
                         .HasColumnType("longtext");
@@ -57,24 +63,23 @@ namespace API.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AddressId")
-                        .IsUnique();
-
                     b.ToTable("Person");
-                });
-
-            modelBuilder.Entity("API.Models.Person", b =>
-                {
-                    b.HasOne("API.Models.Address", "Address")
-                        .WithOne("Person")
-                        .HasForeignKey("API.Models.Person", "AddressId");
-
-                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("API.Models.Address", b =>
                 {
+                    b.HasOne("API.Models.Person", "Person")
+                        .WithOne("Address")
+                        .HasForeignKey("API.Models.Address", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Person");
+                });
+
+            modelBuilder.Entity("API.Models.Person", b =>
+                {
+                    b.Navigation("Address");
                 });
 #pragma warning restore 612, 618
         }

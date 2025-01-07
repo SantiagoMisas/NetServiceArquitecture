@@ -1,15 +1,17 @@
 ﻿using API.Generics;
+using System.Text.Json.Serialization;
 
 namespace API.Models
 {
     public class Address: GenericEntity
     {
 
-        public double? latitude { get; set; }
+        public double? Latitude { get; set; }
 
-        public double? longitude { get; set; }
+        public double? Longitude { get; set; }
 
         public string? AddressText { get; set; }
+        [JsonIgnore]
         public Person? Person { get; set; }
     }
 }

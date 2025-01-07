@@ -11,6 +11,7 @@ namespace API.Utilities
         public static void Configure(IServiceCollection services)
         {
             services.AddScoped<IGenericRepository<Person, string>, RepositoryImpl<Person, string>>();
+            services.AddScoped<IGenericRepository<Address, string>, RepositoryImpl<Address, string>>();
             services.AddScoped<IEdit<PersonDto>, PersonService>();
             services.AddScoped<IRead<PersonDto>, PersonService>();
 

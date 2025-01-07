@@ -2,6 +2,7 @@
 using API.Generics;
 using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace API.Repositories
 {
@@ -49,6 +50,15 @@ namespace API.Repositories
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync();
+        }
+        public IQueryable<T> Include(params Expression<Func<T, object>>[] includes)
+        {
+            IQueryable<T> query = _dbSet;
+            foreach (var include in includes)
+            {
+                query = query.Include(include);
+            }
+            return query;
         }
 
         public async Task<IEnumerable<T>> GetFilteredAsync(FilterParameter<T> parameters)

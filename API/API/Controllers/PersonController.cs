@@ -60,6 +60,12 @@ namespace API.Controllers
             return await _iReadPerson.getPerson(Id);
         }
 
+        [HttpGet("getPeople")]
+        public async Task<IActionResult> getPeople()
+        {
+            return await _iReadPerson.getAll("18");
+        }
+
 
 
     }
