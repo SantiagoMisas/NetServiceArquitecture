@@ -34,11 +34,17 @@
   {
     "ContainingType": "API.Controllers.PersonController",
     "Method": "getPeople",
-    "RelativePath": "api/Person/getPeople",
+    "RelativePath": "api/Person/getPeople/{condition}",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [],
+    "Parameters": [
+      {
+        "Name": "condition",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
     "ReturnTypes": []
   },
   {

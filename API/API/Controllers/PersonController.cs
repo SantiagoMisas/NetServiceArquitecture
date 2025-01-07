@@ -60,10 +60,10 @@ namespace API.Controllers
             return await _iReadPerson.getPerson(Id);
         }
 
-        [HttpGet("getPeople")]
-        public async Task<IActionResult> getPeople()
+        [HttpGet("getPeople/{condition}")]
+        public async Task<IActionResult> getPeople(string condition)
         {
-            return await _iReadPerson.getAll("18");
+            return await _iReadPerson.getAll(condition);
         }
 
 

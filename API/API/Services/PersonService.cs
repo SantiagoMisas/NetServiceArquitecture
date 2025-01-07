@@ -141,9 +141,10 @@ namespace API.Services
 
             try 
             {
+                Console.WriteLine($"Condicion De Busqueda",condition);
                 var filteredPeople = (await _personRepository
                      .Include(a => a.Address) 
-                     .Where(a => a.Name.Contains(condition) && a.Address != null)
+                     .Where(a => EF.Functions.Like(a.Name, $"%{condition}%") && a.Address != null)
                      .ToListAsync())
                      .Select(a => fromPersonEntityToPersonDto(a));
 
