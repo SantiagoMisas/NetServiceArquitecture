@@ -1,0 +1,31 @@
+# Archivos del sistema operativo
+.DS_Store          # macOS
+Thumbs.db          # Windows
+
+# Archivos de la carpeta bin/obj generados por .NET
+/bin/
+/obj/
+
+# Archivos de configuración de Visual Studio
+.vs/
+.vscode/
+.idea/
+
+# Archivos de configuración de NuGet
+*.nupkg
+*.snupkg
+
+# Archivos de logs
+*.log
+
+# Archivos de build y configuración
+appsettings.Development.json
+appsettings.*.json
+
+# Archivos temporales
+*.tmp
+*.bak
+*.swp
+
+# Archivos de dependencias locales (por ejemplo, Node.js o Python)
+node_modules/
