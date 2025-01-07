@@ -1,4 +1,6 @@
 ﻿using API.ApplicationDb;
+using API.Generics;
+using API.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Repositories

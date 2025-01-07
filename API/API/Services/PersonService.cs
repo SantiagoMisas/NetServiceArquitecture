@@ -2,7 +2,6 @@
 using API.Interfaces;
 using API.Models;
 using Microsoft.AspNetCore.Mvc;
-using API.Repositories;
 
 namespace API.Services
 {

@@ -1,4 +1,7 @@
-﻿namespace API.Repositories
+﻿using API.Generics;
+using API.Repositories;
+
+namespace API.Interfaces
 {
     public interface IGenericRepository<T, TKey> where T : class
     {
@@ -9,7 +12,6 @@
         Task DeleteAsync(TKey id);
         Task SaveChangesAsync();
         Task<IEnumerable<T>> GetFilteredAsync(FilterParameter<T> parameters);
-
         Task<IEnumerable<T>> GetQueryResultAsync(QueryParameter<T> parameters);
     }
 }
