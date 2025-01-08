@@ -213,16 +213,45 @@ namespace API.Services
                 {
                     return new NotFoundObjectResult($"The person has not be found {Id}");
                 }
+
                 foundPerson.Name = personDto.Name;
                 foundPerson.Email = personDto.Email;
                 foundPerson.PhoneNumber = personDto.PhoneNumber;
-                foundPerson.AddressId = personDto.AddressId;
 
                 await _personRepository.UpdateAsync(foundPerson); 
                 await _personRepository.SaveChangesAsync();
 
+                    if (personDto.Address != null) {
+                        if (foundPerson.Address != null)
+                        {
+                            foundPerson.Address.AddressText = personDto.Address.AddressText;
+                            foundPerson.Address.Latitude = personDto.Address.Latitude;
+                            foundPerson.Address.Longitude = personDto.Address.Longitude;
+                            await _addressRepository.UpdateAsync(foundPerson.Address);
+                            await _addressRepository.SaveChangesAsync();
+                        }
+                        else
+                        {
+                            Address newAddress = new Address
+                            {
+                                Id = Guid.NewGuid().ToString(),
+                                AddressText = personDto.Address.AddressText,
+                                Latitude = personDto.Address.Latitude,
+                                Longitude = personDto.Address.Longitude
+                            };
+
+                            await _addressRepository.AddAsync(newAddress);
+                            await _addressRepository.SaveChangesAsync();
+
+                            foundPerson.AddressId = newAddress.Id;
+                            foundPerson.Address = newAddress;
+                        }
+                    }
+                            await _personRepository.UpdateAsync(foundPerson);
+                            await _personRepository.SaveChangesAsync();
+
                 return new OkObjectResult($"Person has been updated {Id}");
-                    
+
                 } catch (Exception error) {
                     return new StatusCodeResult(500);
                 }
