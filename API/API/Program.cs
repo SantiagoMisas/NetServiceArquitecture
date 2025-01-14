@@ -18,6 +18,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseMySQL(
 ));
 
 IoCConfiguration.Configure(builder.Services);
+Mapper.InitializeMappings(builder.Services);
 
 var app = builder.Build();
 

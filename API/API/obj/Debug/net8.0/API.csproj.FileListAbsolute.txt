@@ -245,3 +245,4 @@ C:\Users\Santiago Misas\Desktop\NetServiceArquitecture\API\API\obj\Debug\net8.0\
 C:\Users\Santiago Misas\Desktop\NetServiceArquitecture\API\API\obj\Debug\net8.0\staticwebassets.build.endpoints.json
 C:\Users\Santiago Misas\Desktop\NetServiceArquitecture\API\API\obj\Debug\net8.0\staticwebassets\msbuild.API.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
 C:\Users\Santiago Misas\Desktop\NetServiceArquitecture\API\API\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Santiago Misas\Desktop\NetServiceArquitecture\API\API\bin\Debug\net8.0\AutoMapper.dll

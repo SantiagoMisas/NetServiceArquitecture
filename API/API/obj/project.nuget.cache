@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "NvnYnSkALc0=",
+  "dgSpecHash": "PAqZ2NpJyGM=",
   "success": true,
   "projectFilePath": "C:\\Users\\Santiago Misas\\Desktop\\NetServiceArquitecture\\API\\API\\API.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Santiago Misas\\.nuget\\packages\\automapper\\13.0.1\\automapper.13.0.1.nupkg.sha512",
     "C:\\Users\\Santiago Misas\\.nuget\\packages\\bouncycastle.cryptography\\2.2.1\\bouncycastle.cryptography.2.2.1.nupkg.sha512",
     "C:\\Users\\Santiago Misas\\.nuget\\packages\\google.protobuf\\3.25.1\\google.protobuf.3.25.1.nupkg.sha512",
     "C:\\Users\\Santiago Misas\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",

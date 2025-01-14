@@ -3,6 +3,7 @@ using API.DTOS;
 using API.Interfaces;
 using API.Models;
 using API.Repositories;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,12 +13,18 @@ namespace API.Services
     {
         private readonly IGenericRepository<Person, string> _personRepository;
         private readonly IGenericRepository<Address, string> _addressRepository;
+        private readonly IMapper _mapper;
+
 
         public PersonService(
-            IGenericRepository<Person, string> personRepository, IGenericRepository<Address, string> addressRepository)
+            IGenericRepository<Person, string> personRepository, 
+            IGenericRepository<Address, string> addressRepository,
+            IMapper mapper)
         {
             _personRepository=personRepository;
             _addressRepository=addressRepository;
+            _mapper=mapper;
+
         }
 
 
@@ -27,7 +34,9 @@ namespace API.Services
             {
                 if (personDto != null)
                 {
-                    var person = fromPersonDtoToPersonEntity(personDto);
+                    //var person = fromPersonDtoToPersonEntity(personDto);
+                    Person person = _mapper.Map<Person>(personDto);
+
                     Console.WriteLine("creation mapeo person-------------", person);
 
                     if (person.Address != null)
@@ -146,7 +155,7 @@ namespace API.Services
                      .Include(a => a.Address) 
                      .Where(a => EF.Functions.Like(a.Name, $"%{condition}%") && a.Address != null)
                      .ToListAsync())
-                     .Select(a => fromPersonEntityToPersonDto(a));
+                     .Select(a => _mapper.Map<PersonDto>(a));
 
                 // EJEMPLO CON FILTER PARAMETER
                 //var parameters = new FilterParameter<Person>
@@ -191,7 +200,7 @@ namespace API.Services
                 }
                 else {
                 
-                PersonDto personDto = fromPersonEntityToPersonDto(foundPerson);
+                PersonDto personDto = _mapper.Map<PersonDto>(foundPerson);
                 return new OkObjectResult(personDto);
                 
                 }
