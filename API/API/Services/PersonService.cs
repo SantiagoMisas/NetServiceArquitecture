@@ -9,6 +9,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
 
 namespace API.Services
 {
@@ -46,11 +47,11 @@ namespace API.Services
                     //var person = fromPersonDtoToPersonEntity(personDto);
                     Person person = _mapper.Map<Person>(personDto);
 
-                    _logger.getMessage("creation mapeo person-------------", person);
+                    _logger.printMessage("creation mapeo person-------------", person);
 
                     if (person.Address != null)
                     {
-                        _logger.getMessage("creation mapeada address-------------", person.Address);
+                        _logger.printMessage("creation mapeada address-------------", person.Address);
                         await _addressRepository.AddAsync(person.Address);
                         await _addressRepository.SaveChangesAsync();
                     }
@@ -66,7 +67,7 @@ namespace API.Services
             }
             catch (Exception ex)
             {
-                _logger.getMessage($"Error: {ex.Message}\n{ex.StackTrace}");
+                _logger.printMessage($"Error: {ex.Message}\n{ex.StackTrace}");
                 return new ObjectResult(new { message = "An error occurred", details = ex.Message })
                 {
                     StatusCode = 500
@@ -83,7 +84,7 @@ namespace API.Services
             try
             {
 
-                var foundPerson = await _personRepository.GetByIdAsync(Id);
+                Person foundPerson = await _personRepository.GetByIdAsync(Id);
 
                 if (foundPerson == null)
                 {
@@ -97,7 +98,7 @@ namespace API.Services
             }
             catch (Exception ex)
             {
-                _logger.getMessage(ex);
+                _logger.printMessage(ex);
                 return new StatusCodeResult(500);
             }
         }
@@ -167,12 +168,13 @@ namespace API.Services
 
             try 
             {
-                _logger.getMessage($"Condicion De Busqueda",condition);
-                var filteredPeople = (await _personRepository
+                _logger.printMessage($"Condicion De Busqueda",condition);
+                List<PersonDto> filteredPeople = (await _personRepository
                      .Include(a => a.Address) 
                      .Where(a => EF.Functions.Like(a.Name, $"%{condition}%") && a.Address != null)
                      .ToListAsync())
-                     .Select(a => _mapper.Map<PersonDto>(a));
+                     .Select(a => _mapper.Map<PersonDto>(a))
+                     .ToList();
 
                 // EJEMPLO CON FILTER PARAMETER
                 //var parameters = new FilterParameter<Person>
@@ -194,12 +196,12 @@ namespace API.Services
                 return new OkObjectResult(filteredPeople);
             } catch (Exception error) {
 
-                _logger.getMessage(error.Message);
+                _logger.printMessage(error.Message);
                 return new StatusCodeResult(500);
             }
         }
 
-        public async Task<IActionResult> getAllCustom(string condition)
+        public async Task<IActionResult> includeCustom(string condition)
         {
             if (string.IsNullOrEmpty(condition))
             {
@@ -225,7 +227,7 @@ namespace API.Services
             
             catch (Exception ex) {
 
-                _logger.getMessage(ex);
+                _logger.printMessage(ex);
                 return new StatusCodeResult(500);
             
             }
@@ -257,7 +259,7 @@ namespace API.Services
                 }
             } catch (Exception error) {
 
-                _logger.getMessage(error.Message);
+                _logger.printMessage(error.Message);
                 return new StatusCodeResult(500);
             }
         }
@@ -269,7 +271,7 @@ namespace API.Services
                 }
                 try
                 {       
-                    var foundPerson = await _personRepository.GetByIdAsync(Id);
+                    Person foundPerson = await _personRepository.GetByIdAsync(Id);
 
                 if (foundPerson == null) 
                 {
@@ -315,9 +317,79 @@ namespace API.Services
                 return new OkObjectResult($"Person has been updated {Id}");
 
                 } catch (Exception error) {
-                _logger.getMessage(error.Message);
+                _logger.printMessage(error.Message);
                     return new StatusCodeResult(500);
                 }
+        }
+
+        public async Task<IActionResult> filterParameterCustom(string name, string addressText, string email)
+        {
+            try
+            {
+                var query = _context.Person.AsQueryable();
+
+                if (!string.IsNullOrEmpty(name))
+                {
+                    query = query.Where(p => p.Name.Contains(name));
+                }
+
+                if (string.IsNullOrEmpty(email))
+                {
+                    query = query.Where(p => p != null && p.Email != null && p.Email.Contains(email));
+                }
+
+                if (string.IsNullOrEmpty(addressText))
+                {
+                    query = query.Where(p => p.Address != null && p.Address.AddressText != null && p.Address.AddressText.Contains(addressText));
+                }
+
+                List<PersonDto> foundPeople = await query
+                    .Include(p => p.Address)
+                    .Select(p => _mapper.Map<PersonDto>(p))
+                    .ToListAsync();
+
+                if (foundPeople == null)
+                {
+                    return new NotFoundObjectResult("Not found");
+                }
+                return new OkObjectResult(foundPeople);
+            }
+            catch (Exception ex) {
+
+                _logger.printMessage(ex.Message);
+                return new StatusCodeResult(500);
+            }
+        }
+
+        public async Task<IActionResult> queryParameterCustom(string? name, string? email, string? addressText)
+        {
+            try
+            {
+                var nameParam = name ?? string.Empty;
+                var emailParam = email ?? string.Empty;
+                var addressTextParam = addressText ?? string.Empty;
+
+                List<PersonDto> foundPeople = await _context.Person
+                    .FromSqlInterpolated($@"
+                    SELECT p.* 
+                    FROM Persons p
+                    LEFT JOIN Addresses a ON p.AddressId = a.Id
+                    WHERE
+                        (@nameParam = '' OR p.Name LIKE '%' + @nameParam + '%') AND
+                        (@emailParam = '' OR p.Email = @emailParam) AND
+                        (@addressTextParam = '' OR a.AddressText LIKE '%' + @addressTextParam + '%')")
+                    .Include(p => p.Address)
+                    .Select(p => _mapper.Map<PersonDto>(p))
+                    .ToListAsync();
+
+                return new OkObjectResult(foundPeople);
+            }
+            catch (Exception ex) 
+            {
+                _logger.printMessage(ex.Message);
+                return new StatusCodeResult(500);
+            
+            }
         }
     }
 }
