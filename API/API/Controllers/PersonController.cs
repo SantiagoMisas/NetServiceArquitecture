@@ -66,6 +66,12 @@ namespace API.Controllers
             return await _iReadPerson.getAll(condition);
         }
 
+        [HttpGet("getCustomPeople/{condition}")]
+        public async Task<IActionResult> getCustomPeople(string condition)
+        {
+            return await _iReadPerson.getAllCustom(condition);
+        }
+
 
 
     }

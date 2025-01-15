@@ -33,6 +33,22 @@
   },
   {
     "ContainingType": "API.Controllers.PersonController",
+    "Method": "getCustomPeople",
+    "RelativePath": "api/Person/getCustomPeople/{condition}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "condition",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "API.Controllers.PersonController",
     "Method": "getPeople",
     "RelativePath": "api/Person/getPeople/{condition}",
     "HttpMethod": "GET",

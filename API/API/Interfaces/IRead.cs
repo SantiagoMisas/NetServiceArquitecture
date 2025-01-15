@@ -6,5 +6,6 @@ namespace API.Interfaces
     {
         Task<IActionResult> getPerson(string Id);
         Task<IActionResult> getAll(string condition);
+        Task<IActionResult> getAllCustom(string condition);
     }
 }

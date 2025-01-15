@@ -15,6 +15,7 @@ namespace API.Utilities
             services.AddScoped<IGenericRepository<Address, string>, RepositoryImpl<Address, string>>();
             services.AddScoped<IEdit<PersonDto>, PersonService>();
             services.AddScoped<IRead<PersonDto>, PersonService>();
+            services.AddSingleton<Logger>();
 
 
         }

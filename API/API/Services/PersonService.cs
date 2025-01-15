@@ -1,10 +1,13 @@
-﻿using API.Dtos;
+﻿using API.ApplicationDb;
+using API.Dtos;
 using API.DTOS;
 using API.Interfaces;
 using API.Models;
 using API.Repositories;
+using API.Utilities;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Services
@@ -14,15 +17,21 @@ namespace API.Services
         private readonly IGenericRepository<Person, string> _personRepository;
         private readonly IGenericRepository<Address, string> _addressRepository;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
+        private readonly Logger _logger;
 
 
         public PersonService(
             IGenericRepository<Person, string> personRepository, 
             IGenericRepository<Address, string> addressRepository,
+            ApplicationDbContext context,
+            Logger logger,
             IMapper mapper)
         {
             _personRepository=personRepository;
             _addressRepository=addressRepository;
+            _context=context;
+            _logger=logger;
             _mapper=mapper;
 
         }
@@ -37,11 +46,11 @@ namespace API.Services
                     //var person = fromPersonDtoToPersonEntity(personDto);
                     Person person = _mapper.Map<Person>(personDto);
 
-                    Console.WriteLine("creation mapeo person-------------", person);
+                    _logger.getMessage("creation mapeo person-------------", person);
 
                     if (person.Address != null)
                     {
-                        Console.WriteLine("creation mapeada address-------------", person.Address);
+                        _logger.getMessage("creation mapeada address-------------", person.Address);
                         await _addressRepository.AddAsync(person.Address);
                         await _addressRepository.SaveChangesAsync();
                     }
@@ -57,7 +66,7 @@ namespace API.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error: {ex.Message}\n{ex.StackTrace}");
+                _logger.getMessage($"Error: {ex.Message}\n{ex.StackTrace}");
                 return new ObjectResult(new { message = "An error occurred", details = ex.Message })
                 {
                     StatusCode = 500
@@ -71,18 +80,26 @@ namespace API.Services
             {
                 return new BadRequestObjectResult("Invalid data");
             }
-
-            var foundPerson = await _personRepository.GetByIdAsync(Id);
-
-            if (foundPerson == null)
+            try
             {
-                return new NotFoundObjectResult($"Person has not be found with the id {Id}");
+
+                var foundPerson = await _personRepository.GetByIdAsync(Id);
+
+                if (foundPerson == null)
+                {
+                    return new NotFoundObjectResult($"Person has not be found with the id {Id}");
+                }
+
+                await _personRepository.DeleteAsync(foundPerson.Id.ToString());
+                await _personRepository.SaveChangesAsync();
+
+                return new OkObjectResult($"The Person has been deleted {Id}"); ;
             }
-
-            await _personRepository.DeleteAsync(foundPerson.Id.ToString());
-            await _personRepository.SaveChangesAsync();
-
-            return new OkObjectResult($"The Person has been deleted {Id}"); ;
+            catch (Exception ex)
+            {
+                _logger.getMessage(ex);
+                return new StatusCodeResult(500);
+            }
         }
 
         public Person fromPersonDtoToPersonEntity(PersonDto personDto)
@@ -150,7 +167,7 @@ namespace API.Services
 
             try 
             {
-                Console.WriteLine($"Condicion De Busqueda",condition);
+                _logger.getMessage($"Condicion De Busqueda",condition);
                 var filteredPeople = (await _personRepository
                      .Include(a => a.Address) 
                      .Where(a => EF.Functions.Like(a.Name, $"%{condition}%") && a.Address != null)
@@ -177,9 +194,43 @@ namespace API.Services
                 return new OkObjectResult(filteredPeople);
             } catch (Exception error) {
 
+                _logger.getMessage(error.Message);
                 return new StatusCodeResult(500);
             }
         }
+
+        public async Task<IActionResult> getAllCustom(string condition)
+        {
+            if (string.IsNullOrEmpty(condition))
+            {
+
+                return new BadRequestObjectResult("Condition cannot be null or empty.");
+            }
+            try {
+
+                List<PersonDto> foundPeople = await _context.Person
+                    .Where(e => e.Address != null && e.Email == condition.ToLower())
+                    .Include(p => p.Address)
+                    .Select(m => _mapper.Map<PersonDto>(m))
+                    .ToListAsync();
+
+                if (foundPeople == null)
+                {
+                    return new NotFoundObjectResult("Not found");
+                }
+
+                return new OkObjectResult(foundPeople);
+
+            } 
+            
+            catch (Exception ex) {
+
+                _logger.getMessage(ex);
+                return new StatusCodeResult(500);
+            
+            }
+        }
+
 
         public async Task<IActionResult> getPerson(string Id)
         {
@@ -205,6 +256,8 @@ namespace API.Services
                 
                 }
             } catch (Exception error) {
+
+                _logger.getMessage(error.Message);
                 return new StatusCodeResult(500);
             }
         }
@@ -262,6 +315,7 @@ namespace API.Services
                 return new OkObjectResult($"Person has been updated {Id}");
 
                 } catch (Exception error) {
+                _logger.getMessage(error.Message);
                     return new StatusCodeResult(500);
                 }
         }
